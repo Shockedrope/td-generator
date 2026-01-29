@@ -1,0 +1,25 @@
+{
+  "name": "td-generator",
+  "version": "1.0.0",
+  "description": "generate td files for wot things",
+  "main": "index.js",
+  "bin": {
+    "td-generator": "./bin/td-generator.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wot",
+    "web-of-things",
+    "thing-description",
+    "td",
+    "iot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "inquirer": "^8.2.7"
+  }
+}
