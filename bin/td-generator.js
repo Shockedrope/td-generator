@@ -74,7 +74,7 @@ program
           type: 'list',
           name: 'protocol',
           message: 'Select the protocol:',
-          choices: ['HTTP', 'HTTPS', 'CoAP', 'MQTT', 'WebSocket'],
+          choices: ['HTTP', 'HTTPS', 'CoAP', 'MQTT', 'WebSocket', 'Modbus TCP'],
           default: 'HTTP'
         }
       ]);
@@ -161,39 +161,49 @@ program
             propertyDetail.readable = true;
           }
 
-          properties[propertyDetail.name] = {
+          // Build property object with metadata first, then forms
+          const property = {
             type: propertyDetail.type,
-            description: propertyDetail.description,
-            forms: [{
-              href: `/${propertyDetail.name}`,
-              op: [],
-              contentType: 'application/json'
-            }]
+            description: propertyDetail.description
           };
 
-          if (propertyDetail.readable) {
-            properties[propertyDetail.name].forms[0].op.push('readproperty');
-          }
-          if (propertyDetail.writable) {
-            properties[propertyDetail.name].forms[0].op.push('writeproperty');
-          }
-          if (propertyDetail.observable) {
-            properties[propertyDetail.name].forms[0].op.push('observeproperty');
-            properties[propertyDetail.name].observable = true;
-          }
-
-          // Only set readOnly/writeOnly if property is exclusively one or the other
+          // Add readOnly/writeOnly if property is exclusively one or the other
           if (propertyDetail.readable && !propertyDetail.writable) {
-            properties[propertyDetail.name].readOnly = true;
+            property.readOnly = true;
           }
           if (!propertyDetail.readable && propertyDetail.writable) {
-            properties[propertyDetail.name].writeOnly = true;
+            property.writeOnly = true;
+          }
+
+          // Add observable if specified
+          if (propertyDetail.observable) {
+            property.observable = true;
           }
 
           // Add unit if provided
           if (propertyDetail.unit && propertyDetail.unit.trim() !== '') {
-            properties[propertyDetail.name].unit = propertyDetail.unit.trim();
+            property.unit = propertyDetail.unit.trim();
           }
+
+          // Add forms with operations
+          const operations = [];
+          if (propertyDetail.readable) {
+            operations.push('readproperty');
+          }
+          if (propertyDetail.writable) {
+            operations.push('writeproperty');
+          }
+          if (propertyDetail.observable) {
+            operations.push('observeproperty');
+          }
+
+          property.forms = [{
+            href: `/${propertyDetail.name}`,
+            op: operations,
+            contentType: 'application/json'
+          }];
+
+          properties[propertyDetail.name] = property;
 
           const continueAdding = await inquirer.prompt([
             {
@@ -313,7 +323,8 @@ program
         'HTTPS': 'https',
         'CoAP': 'coap',
         'MQTT': 'mqtt',
-        'WebSocket': 'ws'
+        'WebSocket': 'ws',
+        'Modbus TCP': 'modbus+tcp'
       };
       const baseUrl = `${protocolMap[networkAnswers.protocol]}://${networkAnswers.ipAddress}:${networkAnswers.port}`;
 
@@ -360,9 +371,9 @@ program
           { '@language': 'en' }
         ],
         '@type': basicAnswers.deviceType !== 'custom' ? ['Thing', basicAnswers.deviceType] : ['Thing'],
-        id: `urn:dev:ops:${basicAnswers.title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+        id: `urn:dev:ops:${basicAnswers.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}-${Date.now()}`,
         title: basicAnswers.title,
-        name: basicAnswers.title.toLowerCase().replace(/\s+/g, '-'),
+        name: basicAnswers.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
         description: basicAnswers.description,
         securityDefinitions: securityDefinitions,
         security: security,
@@ -436,7 +447,7 @@ program
       }
 
       // Basic validation
-      const requiredFields = ['@context', 'title', 'security', 'securityDefinitions'];
+      const requiredFields = ['@context', 'id', 'title', 'security', 'securityDefinitions'];
       const missingFields = requiredFields.filter(field => !td[field]);
 
       if (missingFields.length > 0) {
