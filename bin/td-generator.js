@@ -140,6 +140,18 @@ program
               name: 'writable',
               message: 'Is this property writable?',
               default: false
+            },
+            {
+              type: 'confirm',
+              name: 'observable',
+              message: 'Is this property observable (supports subscriptions)?',
+              default: false
+            },
+            {
+              type: 'input',
+              name: 'unit',
+              message: 'Unit of measurement (leave empty if none):',
+              default: ''
             }
           ]);
 
@@ -154,7 +166,8 @@ program
             description: propertyDetail.description,
             forms: [{
               href: `/${propertyDetail.name}`,
-              op: []
+              op: [],
+              contentType: 'application/json'
             }]
           };
 
@@ -164,6 +177,10 @@ program
           if (propertyDetail.writable) {
             properties[propertyDetail.name].forms[0].op.push('writeproperty');
           }
+          if (propertyDetail.observable) {
+            properties[propertyDetail.name].forms[0].op.push('observeproperty');
+            properties[propertyDetail.name].observable = true;
+          }
 
           // Only set readOnly/writeOnly if property is exclusively one or the other
           if (propertyDetail.readable && !propertyDetail.writable) {
@@ -171,6 +188,11 @@ program
           }
           if (!propertyDetail.readable && propertyDetail.writable) {
             properties[propertyDetail.name].writeOnly = true;
+          }
+
+          // Add unit if provided
+          if (propertyDetail.unit && propertyDetail.unit.trim() !== '') {
+            properties[propertyDetail.name].unit = propertyDetail.unit.trim();
           }
 
           const continueAdding = await inquirer.prompt([
@@ -218,7 +240,8 @@ program
             description: actionDetail.description,
             forms: [{
               href: `/${actionDetail.name}`,
-              op: 'invokeaction'
+              op: 'invokeaction',
+              contentType: 'application/json'
             }]
           };
 
@@ -267,7 +290,8 @@ program
             description: eventDetail.description,
             forms: [{
               href: `/${eventDetail.name}`,
-              op: 'subscribeevent'
+              op: 'subscribeevent',
+              contentType: 'application/json'
             }]
           };
 
@@ -332,12 +356,13 @@ program
       // Create the Thing Description
       const td = {
         '@context': [
-          'https://www.w3.org/2019/wot/td/v1',
+          'https://www.w3.org/2022/wot/td/v1.1',
           { '@language': 'en' }
         ],
-        '@type': basicAnswers.deviceType !== 'custom' ? [basicAnswers.deviceType] : [],
+        '@type': basicAnswers.deviceType !== 'custom' ? ['Thing', basicAnswers.deviceType] : ['Thing'],
         id: `urn:dev:ops:${basicAnswers.title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
         title: basicAnswers.title,
+        name: basicAnswers.title.toLowerCase().replace(/\s+/g, '-'),
         description: basicAnswers.description,
         securityDefinitions: securityDefinitions,
         security: security,

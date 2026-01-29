@@ -1,10 +1,17 @@
 # TD Generator
 
-A CLI tool to generate Thing Description (TD) files for Web of Things (WoT) devices.
+A CLI tool to generate Thing Description (TD) files for Web of Things (WoT) devices, compliant with W3C WoT Thing Description 1.1 specification and OPC UA EdgeTranslator standards.
 
 ## Overview
 
-This tool helps you create W3C Web of Things Thing Description files through an interactive command-line interface. Thing Descriptions are JSON-LD documents that describe the metadata and interfaces of IoT devices, making them discoverable and interoperable.
+This tool helps you create W3C Web of Things Thing Description files through an interactive command-line interface. Thing Descriptions are JSON-LD documents that describe the metadata and interfaces of IoT devices, making them discoverable and interoperable across different platforms and protocols.
+
+### Standards Compliance
+
+- ✅ **W3C WoT Thing Description 1.1** (December 2023)
+- ✅ **OPC UA EdgeTranslator** compatible format
+- ✅ Industrial IoT ready with observable properties
+- ✅ Protocol-agnostic design
 
 ## Installation
 
@@ -51,6 +58,8 @@ The tool will guide you through the following steps:
 4. **Properties** (optional)
    - Define readable/writable device properties
    - Specify data types (string, number, integer, boolean, object, array)
+   - Mark properties as observable (supports subscriptions/polling)
+   - Define units of measurement (celsius, percent, etc.)
 
 5. **Actions** (optional)
    - Define operations the device can perform
@@ -125,17 +134,18 @@ This tool will help you create a Thing Description file for your Web of Things d
 
 ## Generated TD Format
 
-The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing Description specification. Example output:
+The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing Description 1.1 specification. Example output:
 
 ```json
 {
   "@context": [
-    "https://www.w3.org/2019/wot/td/v1",
+    "https://www.w3.org/2022/wot/td/v1.1",
     { "@language": "en" }
   ],
-  "@type": ["smartLight"],
+  "@type": ["Thing", "smartLight"],
   "id": "urn:dev:ops:smart-light-1738113000000",
   "title": "Smart Light",
+  "name": "smart-light",
   "description": "A smart LED light bulb",
   "securityDefinitions": {
     "nosec_sc": {
@@ -148,17 +158,22 @@ The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing 
     "status": {
       "type": "boolean",
       "description": "Current on/off status",
+      "observable": true,
       "forms": [{
         "href": "/status",
-        "op": ["readproperty", "writeproperty"]
+        "op": ["readproperty", "writeproperty", "observeproperty"],
+        "contentType": "application/json"
       }]
     },
     "brightness": {
       "type": "integer",
       "description": "Brightness level (0-100)",
+      "observable": true,
+      "unit": "percent",
       "forms": [{
         "href": "/brightness",
-        "op": ["readproperty", "writeproperty"]
+        "op": ["readproperty", "writeproperty", "observeproperty"],
+        "contentType": "application/json"
       }]
     }
   },
@@ -167,7 +182,8 @@ The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing 
       "description": "Toggle the light on/off",
       "forms": [{
         "href": "/toggle",
-        "op": "invokeaction"
+        "op": "invokeaction",
+        "contentType": "application/json"
       }]
     }
   }
@@ -177,18 +193,25 @@ The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing 
 ## Features
 
 - ✅ Interactive CLI prompts for easy TD creation
+- ✅ **W3C WoT Thing Description 1.1** compliant (December 2023 standard)
+- ✅ **OPC UA EdgeTranslator** compatible format
 - ✅ Support for multiple protocols (HTTP, HTTPS, CoAP, MQTT, WebSocket)
-- ✅ Configurable security schemes
+- ✅ Configurable security schemes (nosec, basic, bearer, apikey, oauth2)
+- ✅ **Observable properties** for real-time monitoring and subscriptions
+- ✅ **Unit definitions** for sensor values (celsius, percent, etc.)
 - ✅ Support for properties, actions, and events
-- ✅ W3C WoT TD specification compliant
-- ✅ Built-in validation command
-- ✅ JSON-LD format with proper context
+- ✅ **Content type negotiation** (application/json)
+- ✅ Built-in validation with comprehensive checks
+- ✅ JSON-LD format with proper @context
 
-## Resources
+## Standards & References
 
-- [W3C Web of Things](https://www.w3.org/WoT/)
-- [Thing Description Specification](https://www.w3.org/TR/wot-thing-description/)
-- [WoT Architecture](https://www.w3.org/TR/wot-architecture/)
+This tool follows the latest Web of Things standards and is compatible with industrial IoT platforms:
+
+- [W3C WoT Thing Description 1.1](https://www.w3.org/TR/wot-thing-description11/) - Official W3C Recommendation (Dec 2023)
+- [OPC Foundation UA-EdgeTranslator](https://github.com/OPCFoundation/UA-EdgeTranslator) - Industrial connectivity reference
+- [W3C Web of Things](https://www.w3.org/WoT/) - Overall WoT initiative
+- [WoT Architecture](https://www.w3.org/TR/wot-architecture/) - Architecture specification
 
 ## License
 

@@ -1,15 +1,17 @@
 {
   "@context": [
-    "https://www.w3.org/2019/wot/td/v1",
+    "https://www.w3.org/2022/wot/td/v1.1",
     {
       "@language": "en"
     }
   ],
   "@type": [
+    "Thing",
     "sensor"
   ],
   "id": "urn:dev:ops:temperature-sensor-example",
   "title": "Temperature Sensor",
+  "name": "temperature-sensor-example",
   "description": "A simple temperature and humidity sensor",
   "securityDefinitions": {
     "nosec_sc": {
@@ -24,30 +26,36 @@
     "temperature": {
       "type": "number",
       "description": "Current temperature in Celsius",
+      "readOnly": true,
+      "observable": true,
+      "unit": "celsius",
       "forms": [
         {
           "href": "/temperature",
           "op": [
-            "readproperty"
-          ]
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
         }
-      ],
-      "readOnly": true,
-      "unit": "celsius"
+      ]
     },
     "humidity": {
       "type": "number",
       "description": "Current relative humidity percentage",
+      "readOnly": true,
+      "observable": true,
+      "unit": "percent",
       "forms": [
         {
           "href": "/humidity",
           "op": [
-            "readproperty"
-          ]
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
         }
       ],
-      "readOnly": true,
-      "unit": "percent",
       "minimum": 0,
       "maximum": 100
     }
@@ -58,7 +66,8 @@
       "forms": [
         {
           "href": "/temperatureChange",
-          "op": "subscribeevent"
+          "op": "subscribeevent",
+          "contentType": "application/json"
         }
       ]
     }

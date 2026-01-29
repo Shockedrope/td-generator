@@ -1,15 +1,17 @@
 {
   "@context": [
-    "https://www.w3.org/2019/wot/td/v1",
+    "https://www.w3.org/2022/wot/td/v1.1",
     {
       "@language": "en"
     }
   ],
   "@type": [
+    "Thing",
     "smartLight"
   ],
   "id": "urn:dev:ops:smart-light-example",
   "title": "Smart Light Example",
+  "name": "smart-light-example",
   "description": "An example smart LED light bulb with dimming and color control",
   "securityDefinitions": {
     "basic_sc": {
@@ -25,26 +27,33 @@
     "status": {
       "type": "boolean",
       "description": "Current on/off status of the light",
+      "observable": true,
       "forms": [
         {
           "href": "/status",
           "op": [
             "readproperty",
-            "writeproperty"
-          ]
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
         }
       ]
     },
     "brightness": {
       "type": "integer",
       "description": "Brightness level from 0 to 100",
+      "observable": true,
+      "unit": "percent",
       "forms": [
         {
           "href": "/brightness",
           "op": [
             "readproperty",
-            "writeproperty"
-          ]
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
         }
       ],
       "minimum": 0,
@@ -53,13 +62,16 @@
     "color": {
       "type": "object",
       "description": "RGB color values",
+      "observable": true,
       "forms": [
         {
           "href": "/color",
           "op": [
             "readproperty",
-            "writeproperty"
-          ]
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
         }
       ]
     }
@@ -70,7 +82,8 @@
       "forms": [
         {
           "href": "/toggle",
-          "op": "invokeaction"
+          "op": "invokeaction",
+          "contentType": "application/json"
         }
       ]
     },
@@ -79,7 +92,8 @@
       "forms": [
         {
           "href": "/fadeIn",
-          "op": "invokeaction"
+          "op": "invokeaction",
+          "contentType": "application/json"
         }
       ]
     },
@@ -88,7 +102,8 @@
       "forms": [
         {
           "href": "/fadeOut",
-          "op": "invokeaction"
+          "op": "invokeaction",
+          "contentType": "application/json"
         }
       ]
     }
@@ -99,7 +114,8 @@
       "forms": [
         {
           "href": "/overheating",
-          "op": "subscribeevent"
+          "op": "subscribeevent",
+          "contentType": "application/json"
         }
       ]
     }
