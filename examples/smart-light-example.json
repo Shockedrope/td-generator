@@ -1,0 +1,123 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": [
+    "Thing",
+    "smartLight"
+  ],
+  "id": "urn:dev:ops:smart-light-example",
+  "title": "Smart Light Example",
+  "name": "smart-light-example",
+  "description": "An example smart LED light bulb with dimming and color control",
+  "securityDefinitions": {
+    "basic_sc": {
+      "scheme": "basic",
+      "in": "header"
+    }
+  },
+  "security": [
+    "basic_sc"
+  ],
+  "base": "http://192.168.1.100:8080",
+  "properties": {
+    "status": {
+      "type": "boolean",
+      "description": "Current on/off status of the light",
+      "observable": true,
+      "forms": [
+        {
+          "href": "/status",
+          "op": [
+            "readproperty",
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "brightness": {
+      "type": "integer",
+      "description": "Brightness level from 0 to 100",
+      "observable": true,
+      "unit": "percent",
+      "forms": [
+        {
+          "href": "/brightness",
+          "op": [
+            "readproperty",
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "color": {
+      "type": "object",
+      "description": "RGB color values",
+      "observable": true,
+      "forms": [
+        {
+          "href": "/color",
+          "op": [
+            "readproperty",
+            "writeproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    }
+  },
+  "actions": {
+    "toggle": {
+      "description": "Toggle the light on/off",
+      "forms": [
+        {
+          "href": "/toggle",
+          "op": "invokeaction",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "fadeIn": {
+      "description": "Gradually increase brightness",
+      "forms": [
+        {
+          "href": "/fadeIn",
+          "op": "invokeaction",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "fadeOut": {
+      "description": "Gradually decrease brightness",
+      "forms": [
+        {
+          "href": "/fadeOut",
+          "op": "invokeaction",
+          "contentType": "application/json"
+        }
+      ]
+    }
+  },
+  "events": {
+    "overheating": {
+      "description": "Alert when device temperature is too high",
+      "forms": [
+        {
+          "href": "/overheating",
+          "op": "subscribeevent",
+          "contentType": "application/json"
+        }
+      ]
+    }
+  }
+}

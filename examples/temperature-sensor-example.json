@@ -1,0 +1,75 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": [
+    "Thing",
+    "sensor"
+  ],
+  "id": "urn:dev:ops:temperature-sensor-example",
+  "title": "Temperature Sensor",
+  "name": "temperature-sensor-example",
+  "description": "A simple temperature and humidity sensor",
+  "securityDefinitions": {
+    "nosec_sc": {
+      "scheme": "nosec"
+    }
+  },
+  "security": [
+    "nosec_sc"
+  ],
+  "base": "http://192.168.1.50:8080",
+  "properties": {
+    "temperature": {
+      "type": "number",
+      "description": "Current temperature in Celsius",
+      "readOnly": true,
+      "observable": true,
+      "unit": "celsius",
+      "forms": [
+        {
+          "href": "/temperature",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "humidity": {
+      "type": "number",
+      "description": "Current relative humidity percentage",
+      "readOnly": true,
+      "observable": true,
+      "unit": "percent",
+      "forms": [
+        {
+          "href": "/humidity",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "events": {
+    "temperatureChange": {
+      "description": "Fired when temperature changes significantly",
+      "forms": [
+        {
+          "href": "/temperatureChange",
+          "op": "subscribeevent",
+          "contentType": "application/json"
+        }
+      ]
+    }
+  }
+}
