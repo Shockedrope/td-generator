@@ -33,9 +33,7 @@
             "writeproperty"
           ]
         }
-      ],
-      "readOnly": false,
-      "writeOnly": false
+      ]
     },
     "brightness": {
       "type": "integer",
@@ -49,8 +47,6 @@
           ]
         }
       ],
-      "readOnly": false,
-      "writeOnly": false,
       "minimum": 0,
       "maximum": 100
     },
@@ -65,9 +61,7 @@
             "writeproperty"
           ]
         }
-      ],
-      "readOnly": false,
-      "writeOnly": false
+      ]
     }
   },
   "actions": {

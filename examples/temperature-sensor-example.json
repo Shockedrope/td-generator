@@ -33,7 +33,6 @@
         }
       ],
       "readOnly": true,
-      "writeOnly": false,
       "unit": "celsius"
     },
     "humidity": {
@@ -48,7 +47,6 @@
         }
       ],
       "readOnly": true,
-      "writeOnly": false,
       "unit": "percent",
       "minimum": 0,
       "maximum": 100

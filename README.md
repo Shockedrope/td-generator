@@ -151,9 +151,7 @@ The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing 
       "forms": [{
         "href": "/status",
         "op": ["readproperty", "writeproperty"]
-      }],
-      "readOnly": false,
-      "writeOnly": false
+      }]
     },
     "brightness": {
       "type": "integer",
@@ -161,9 +159,7 @@ The tool generates JSON-LD Thing Descriptions that conform to the W3C WoT Thing 
       "forms": [{
         "href": "/brightness",
         "op": ["readproperty", "writeproperty"]
-      }],
-      "readOnly": false,
-      "writeOnly": false
+      }]
     }
   },
   "actions": {
