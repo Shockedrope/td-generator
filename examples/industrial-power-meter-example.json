@@ -1,0 +1,193 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": [
+    "Thing",
+    "sensor"
+  ],
+  "id": "urn:dev:modbus:power-meter",
+  "title": "Industrial Power Meter",
+  "name": "modbus-power-meter",
+  "description": "Three-phase power meter with voltage, current, and power measurements",
+  "securityDefinitions": {
+    "nosec_sc": {
+      "scheme": "nosec"
+    }
+  },
+  "security": [
+    "nosec_sc"
+  ],
+  "base": "modbus+tcp://192.168.1.100:502",
+  "properties": {
+    "voltageL1": {
+      "type": "number",
+      "description": "Phase L1 voltage",
+      "readOnly": true,
+      "observable": true,
+      "unit": "volt",
+      "forms": [
+        {
+          "href": "/voltageL1",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "voltageL2": {
+      "type": "number",
+      "description": "Phase L2 voltage",
+      "readOnly": true,
+      "observable": true,
+      "unit": "volt",
+      "forms": [
+        {
+          "href": "/voltageL2",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "voltageL3": {
+      "type": "number",
+      "description": "Phase L3 voltage",
+      "readOnly": true,
+      "observable": true,
+      "unit": "volt",
+      "forms": [
+        {
+          "href": "/voltageL3",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "currentL1": {
+      "type": "number",
+      "description": "Phase L1 current",
+      "readOnly": true,
+      "observable": true,
+      "unit": "ampere",
+      "forms": [
+        {
+          "href": "/currentL1",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "currentL2": {
+      "type": "number",
+      "description": "Phase L2 current",
+      "readOnly": true,
+      "observable": true,
+      "unit": "ampere",
+      "forms": [
+        {
+          "href": "/currentL2",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "currentL3": {
+      "type": "number",
+      "description": "Phase L3 current",
+      "readOnly": true,
+      "observable": true,
+      "unit": "ampere",
+      "forms": [
+        {
+          "href": "/currentL3",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "totalActivePower": {
+      "type": "number",
+      "description": "Total active power consumption",
+      "readOnly": true,
+      "observable": true,
+      "unit": "watt",
+      "forms": [
+        {
+          "href": "/totalActivePower",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "totalReactivePower": {
+      "type": "number",
+      "description": "Total reactive power",
+      "readOnly": true,
+      "observable": true,
+      "unit": "var",
+      "forms": [
+        {
+          "href": "/totalReactivePower",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "powerFactor": {
+      "type": "number",
+      "description": "Total power factor",
+      "readOnly": true,
+      "observable": true,
+      "forms": [
+        {
+          "href": "/powerFactor",
+          "op": [
+            "readproperty",
+            "observeproperty"
+          ],
+          "contentType": "application/json"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "events": {
+    "overload": {
+      "description": "Alert when power consumption exceeds threshold",
+      "forms": [
+        {
+          "href": "/overload",
+          "op": "subscribeevent",
+          "contentType": "application/json"
+        }
+      ]
+    }
+  }
+}
