@@ -1,7 +1,7 @@
 {
   "name": "td-generator",
   "version": "1.0.0",
-  "description": "generate td files for wot things",
+  "description": "CLI tool to generate Thing Description (TD) files for Web of Things devices",
   "main": "index.js",
   "bin": {
     "td-generator": "./bin/td-generator.js"
@@ -18,6 +18,10 @@
   ],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shockedrope/td-generator.git"
+  },
   "dependencies": {
     "commander": "^11.1.0",
     "inquirer": "^8.2.7"

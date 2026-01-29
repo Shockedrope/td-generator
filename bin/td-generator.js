@@ -143,15 +143,19 @@ program
             }
           ]);
 
+          // Ensure at least one of readable or writable is true
+          if (!propertyDetail.readable && !propertyDetail.writable) {
+            console.log('⚠️  Warning: A property must be either readable or writable. Setting as readable.');
+            propertyDetail.readable = true;
+          }
+
           properties[propertyDetail.name] = {
             type: propertyDetail.type,
             description: propertyDetail.description,
             forms: [{
               href: `/${propertyDetail.name}`,
               op: []
-            }],
-            readOnly: propertyDetail.readable && !propertyDetail.writable,
-            writeOnly: !propertyDetail.readable && propertyDetail.writable
+            }]
           };
 
           if (propertyDetail.readable) {
@@ -159,6 +163,14 @@ program
           }
           if (propertyDetail.writable) {
             properties[propertyDetail.name].forms[0].op.push('writeproperty');
+          }
+
+          // Only set readOnly/writeOnly if property is exclusively one or the other
+          if (propertyDetail.readable && !propertyDetail.writable) {
+            properties[propertyDetail.name].readOnly = true;
+          }
+          if (!propertyDetail.readable && propertyDetail.writable) {
+            properties[propertyDetail.name].writeOnly = true;
           }
 
           const continueAdding = await inquirer.prompt([
@@ -282,7 +294,7 @@ program
       const baseUrl = `${protocolMap[networkAnswers.protocol]}://${networkAnswers.ipAddress}:${networkAnswers.port}`;
 
       // Build security definitions
-      let security = [securityAnswers.securityScheme + '_sc'];
+      let security;
       let securityDefinitions = {};
       
       if (securityAnswers.securityScheme === 'nosec') {
@@ -291,22 +303,26 @@ program
           scheme: 'nosec'
         };
       } else if (securityAnswers.securityScheme === 'basic') {
+        security = ['basic_sc'];
         securityDefinitions.basic_sc = {
           scheme: 'basic',
           in: 'header'
         };
       } else if (securityAnswers.securityScheme === 'bearer') {
+        security = ['bearer_sc'];
         securityDefinitions.bearer_sc = {
           scheme: 'bearer',
           in: 'header'
         };
       } else if (securityAnswers.securityScheme === 'apikey') {
+        security = ['apikey_sc'];
         securityDefinitions.apikey_sc = {
           scheme: 'apikey',
           in: 'header',
           name: 'X-API-Key'
         };
       } else if (securityAnswers.securityScheme === 'oauth2') {
+        security = ['oauth2_sc'];
         securityDefinitions.oauth2_sc = {
           scheme: 'oauth2',
           flow: 'client_credentials'
@@ -385,7 +401,14 @@ program
       }
 
       const tdContent = fs.readFileSync(filePath, 'utf8');
-      const td = JSON.parse(tdContent);
+      let td;
+      
+      try {
+        td = JSON.parse(tdContent);
+      } catch (parseError) {
+        console.error('❌ Invalid JSON format in TD file:', parseError.message);
+        process.exit(1);
+      }
 
       // Basic validation
       const requiredFields = ['@context', 'title', 'security', 'securityDefinitions'];
@@ -394,6 +417,27 @@ program
       if (missingFields.length > 0) {
         console.error('❌ Validation failed. Missing required fields:', missingFields.join(', '));
         process.exit(1);
+      }
+
+      // Validate security references
+      if (td.security && td.securityDefinitions) {
+        for (const secScheme of td.security) {
+          if (!td.securityDefinitions[secScheme]) {
+            console.error(`❌ Validation failed. Security scheme '${secScheme}' referenced in 'security' array is not defined in 'securityDefinitions'.`);
+            process.exit(1);
+          }
+        }
+      }
+
+      // Validate @context
+      if (td['@context']) {
+        const hasWoTContext = Array.isArray(td['@context']) 
+          ? td['@context'].some(ctx => typeof ctx === 'string' && ctx.includes('w3.org') && ctx.includes('wot'))
+          : (typeof td['@context'] === 'string' && td['@context'].includes('w3.org') && td['@context'].includes('wot'));
+        
+        if (!hasWoTContext) {
+          console.warn('⚠️  Warning: @context should include W3C WoT TD context URL.');
+        }
       }
 
       console.log('✅ Thing Description is valid!\n');
