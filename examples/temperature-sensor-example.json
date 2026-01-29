@@ -1,0 +1,68 @@
+{
+  "@context": [
+    "https://www.w3.org/2019/wot/td/v1",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": [
+    "sensor"
+  ],
+  "id": "urn:dev:ops:temperature-sensor-example",
+  "title": "Temperature Sensor",
+  "description": "A simple temperature and humidity sensor",
+  "securityDefinitions": {
+    "nosec_sc": {
+      "scheme": "nosec"
+    }
+  },
+  "security": [
+    "nosec_sc"
+  ],
+  "base": "http://192.168.1.50:8080",
+  "properties": {
+    "temperature": {
+      "type": "number",
+      "description": "Current temperature in Celsius",
+      "forms": [
+        {
+          "href": "/temperature",
+          "op": [
+            "readproperty"
+          ]
+        }
+      ],
+      "readOnly": true,
+      "writeOnly": false,
+      "unit": "celsius"
+    },
+    "humidity": {
+      "type": "number",
+      "description": "Current relative humidity percentage",
+      "forms": [
+        {
+          "href": "/humidity",
+          "op": [
+            "readproperty"
+          ]
+        }
+      ],
+      "readOnly": true,
+      "writeOnly": false,
+      "unit": "percent",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "events": {
+    "temperatureChange": {
+      "description": "Fired when temperature changes significantly",
+      "forms": [
+        {
+          "href": "/temperatureChange",
+          "op": "subscribeevent"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "@context": [
+    "https://www.w3.org/2019/wot/td/v1",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": [
+    "smartLight"
+  ],
+  "id": "urn:dev:ops:smart-light-example",
+  "title": "Smart Light Example",
+  "description": "An example smart LED light bulb with dimming and color control",
+  "securityDefinitions": {
+    "basic_sc": {
+      "scheme": "basic",
+      "in": "header"
+    }
+  },
+  "security": [
+    "basic_sc"
+  ],
+  "base": "http://192.168.1.100:8080",
+  "properties": {
+    "status": {
+      "type": "boolean",
+      "description": "Current on/off status of the light",
+      "forms": [
+        {
+          "href": "/status",
+          "op": [
+            "readproperty",
+            "writeproperty"
+          ]
+        }
+      ],
+      "readOnly": false,
+      "writeOnly": false
+    },
+    "brightness": {
+      "type": "integer",
+      "description": "Brightness level from 0 to 100",
+      "forms": [
+        {
+          "href": "/brightness",
+          "op": [
+            "readproperty",
+            "writeproperty"
+          ]
+        }
+      ],
+      "readOnly": false,
+      "writeOnly": false,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "color": {
+      "type": "object",
+      "description": "RGB color values",
+      "forms": [
+        {
+          "href": "/color",
+          "op": [
+            "readproperty",
+            "writeproperty"
+          ]
+        }
+      ],
+      "readOnly": false,
+      "writeOnly": false
+    }
+  },
+  "actions": {
+    "toggle": {
+      "description": "Toggle the light on/off",
+      "forms": [
+        {
+          "href": "/toggle",
+          "op": "invokeaction"
+        }
+      ]
+    },
+    "fadeIn": {
+      "description": "Gradually increase brightness",
+      "forms": [
+        {
+          "href": "/fadeIn",
+          "op": "invokeaction"
+        }
+      ]
+    },
+    "fadeOut": {
+      "description": "Gradually decrease brightness",
+      "forms": [
+        {
+          "href": "/fadeOut",
+          "op": "invokeaction"
+        }
+      ]
+    }
+  },
+  "events": {
+    "overheating": {
+      "description": "Alert when device temperature is too high",
+      "forms": [
+        {
+          "href": "/overheating",
+          "op": "subscribeevent"
+        }
+      ]
+    }
+  }
+}
